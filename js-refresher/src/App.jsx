@@ -1,5 +1,6 @@
 import React from 'react';
 import Search from './components/Search';
+import Spinner from './components/Spinner';
 import { useEffect, useState } from 'react';
 
 //API = Application Programming Interface
@@ -20,10 +21,14 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState();
 
     const [errorMessage, setErrorMessage] = useState();
+    const [movieList, setMovieList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     
     //what is an endpoint
     // how do the apis work and why must we use a key?
     const fetchMovies = async () => {
+        setIsLoading(true);
+        setErrorMessage("");
         try{
             const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
             const response = await fetch(endpoint, API_OPTIONS);
@@ -32,14 +37,20 @@ const App = () => {
             }
             //parse into json
             const data = await response.json();
-            console.log(data);
 
+            //is this not a redundant check?
             if(data.response == false){
                 setErrorMessage(data.Error || 'failed to fetch movies');
+                setMovieList([]);
+                return;
             }
+
+            setMovieList(data.results || []);
         }catch(error){
             console.log(`Error fetching movies: ${error}`);
             setErrorMessage('Error fetching movies. please try again later.');
+        } finally{
+            setIsLoading(false);
         }
     }
 
@@ -59,7 +70,18 @@ const App = () => {
                 
                 <section className="all-movies">
                     <h2>All Movies</h2>
-                    {errorMessage && <p className = "text-red-500">{errorMessage}</p>}
+                    {isLoading ? (
+                        <Spinner />
+                    ) : errorMessage ? (
+                        <p className= "text-red-500">{errorMessage}</p>
+                    ) : (
+                        <ul>
+                            {movieList.map((movie) => (
+                                //what is key for?
+                                <p key = {movie.id} className="text-white">{movie.title}</p>
+                            ))}
+                        </ul>
+                    )}
                 </section>
             </div>
             
