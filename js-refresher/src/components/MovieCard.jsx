@@ -29,6 +29,7 @@ const MovieCard = ({ movie: {title, vote_average, poster_path, release_date, ori
 
                     <span>•</span>
 
+                    {/* im guessing the split creates an array of characters based on the delimiter passed as an argument */}
                     <p className='year'> {release_date ? release_date.split("-")[0] : "N/A"}</p>
 
                  </div>

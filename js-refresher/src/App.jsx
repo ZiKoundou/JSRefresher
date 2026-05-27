@@ -3,6 +3,7 @@ import Search from './components/Search';
 import Spinner from './components/Spinner';
 import MovieCard from './components/MovieCard';
 import { useEffect, useState } from 'react';
+import { useDebounce } from "react-use";
 
 
 //API = Application Programming Interface
@@ -21,13 +22,18 @@ const API_OPTIONS = {
 }
 const App = () => {
     const [searchTerm, setSearchTerm] = useState();
+    const [debounceSearchTerm, setDebounceSearchTerm] = useState();
 
     const [errorMessage, setErrorMessage] = useState();
     const [movieList, setMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    useDebounce(() => setDebounceSearchTerm(searchTerm), 500, [searchTerm]);
     
     //what is an endpoint
     // how do the apis work and why must we use a key?
+
+    // so query is like the inputed argument?
     const fetchMovies = async (query = '') => {
         setIsLoading(true);
         setErrorMessage("");
@@ -59,8 +65,8 @@ const App = () => {
     }
 
     useEffect (() => {
-        fetchMovies(searchTerm);
-    },[searchTerm])
+        fetchMovies(debounceSearchTerm);
+    },[debounceSearchTerm])
 
     return (
         <main>
