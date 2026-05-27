@@ -1,7 +1,9 @@
 import React from 'react';
 import Search from './components/Search';
 import Spinner from './components/Spinner';
+import MovieCard from './components/MovieCard';
 import { useEffect, useState } from 'react';
+
 
 //API = Application Programming Interface
 //one software appplication to another
@@ -78,7 +80,7 @@ const App = () => {
                         <ul>
                             {movieList.map((movie) => (
                                 //what is key for?
-                                <p key = {movie.id} className="text-white">{movie.title}</p>
+                                <MovieCard key = {movie.id} movie={movie}/>
                             ))}
                         </ul>
                     )}
